@@ -24,10 +24,9 @@ def run
         result = dadata_api.search_by_inn(inn)
         csv_writer.write(result)
         processed_inns << inn
+        Fiber.yield
       end.resume
     end
-
-    Fiber.yield
 
     File.write('processed.json', JSON.generate(processed_inns))
   rescue StandardError => e

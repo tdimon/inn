@@ -58,9 +58,9 @@ class DadataApi
         okveds: org.dig('okveds')&.map { |okved| okved.dig('name') } || [],
         address: org.dig('address', 'value'),
         employee_count: org.dig('employee_count'),
-        founders: org.dig('founders')&.map { |founder| founder.dig('fio') } || [],
+        founders: org.dig('founders')&.map { |founder| fio(founder) } || [],
         managers: org.dig('managers')&.map do |manager|
-                    "ФИО: #{manager_fio(manager)}, Должность: #{manager.dig('post')}"
+                    "ФИО: #{fio(manager)}, Должность: #{manager.dig('post')}"
                   end || [],
         finance: {
           income: org.dig('finance', 'income'),
@@ -74,13 +74,14 @@ class DadataApi
     result
   end
 
-  def manager_fio(manager)
-    fio_hash = manager.dig('fio')
-    return '' unless fio_hash
+  def fio(item)
+    fio_data = item.dig('fio')
+    return '' unless fio_data
+    return fio_data if fio_data.is_a?(String)
 
-    surname = fio_hash[:surname]
-    name = fio_hash[:name]
-    patronymic = fio_hash[:patronymic]
+    surname = fio_data['surname']
+    name = fio_data['name']
+    patronymic = fio_data['patronymic']
     [surname, name, patronymic].compact.join(' ')
   end
 end
