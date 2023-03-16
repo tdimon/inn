@@ -3,7 +3,7 @@ require_relative 'dadata_api'
 require 'json'
 require_relative 'csv_writer'
 
-LIMIT_REQUESTS = 180000
+LIMIT_REQUESTS = 180_000
 
 def run
   session_data = JSON.parse(File.read('session_data.json'))
@@ -11,12 +11,11 @@ def run
     session_data['date'] = Date.today.to_s
     session_data['request_count'] = 0
   end
-  if session_data['request_count'] >= LIMIT_REQUESTS
-    return
-  end
+  return if session_data['request_count'] >= LIMIT_REQUESTS
 
   output_inns = JSON.parse(File.read('output.json'))
-  inns = output_inns[output_inns.index(session_data['last_inn'])..output_inns.size]
+  start_index = output_inns.index(session_data['last_inn']) + 1
+  inns = output_inns[start_index..]
   puts inns.size
 
   trap('INT') do # add a trap block to capture the SIGINT signal
