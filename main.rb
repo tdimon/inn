@@ -3,7 +3,7 @@ require_relative 'dadata_api'
 require 'json'
 require_relative 'csv_writer'
 
-LIMIT_REQUESTS = 180_000
+LIMIT_REQUESTS = 180_000 * 2
 
 def run
   session_data = JSON.parse(File.read('session_data.json'))
